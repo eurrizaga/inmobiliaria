@@ -12,9 +12,9 @@ use AppBundle\Entity\Propietario;
 class ClienteController extends Controller
 {
 	/**
-	* @Route("guardarcli", name="guardarcliente")
+	* @Route("guardarcli", name="guardar_propietario")
 	*/
-	public function guardarPropietarioAction(){
+	public function guardarPropietarioAction($req){
 		$dni = 11234568;
 		$rep = $this->getDoctrine()->getRepository('AppBundle:Propietario');
 		$propietario = $rep->findByNrodoc($dni);
@@ -31,7 +31,7 @@ class ClienteController extends Controller
 			return new Response("Propietario Creado: ". $propietario->getId());
 		}
 		else{
-			return new Response("Ya existe un propietario con ese dni ");	
+			return new Response("Ya existe un propietario con el dni " . $dni);	
 		}
 
 
