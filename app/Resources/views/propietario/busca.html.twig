@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Buscar Propietario</title>
+    </head>
+    <body>
+   		{% include 'header.html.twig' %}
+
+        <h1>Buscar Propietarios</h1>
+        <a href="/nuevo/propietario/">NUEVO</a>
+
+        {% if propietarios %}
+	        <table>
+	        	<tr><td>Apellido</td></tr>
+		        {% for p in propietarios %}
+		            <tr><td><a href="/modificar/propietario/{{ p.id }}">{{ p.apellido }}</a></td></tr>
+		        {% endfor %}
+		    </table>
+        {% endif %}
+        
+    </body>
+</html>

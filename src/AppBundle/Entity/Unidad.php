@@ -5,9 +5,12 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
-* @ORM\Entity
-* @ORM\Table(name="unidad")
-*/
+ * @ORM\Entity
+ * @ORM\InheritanceType("JOINED")
+ * @ORM\DiscriminatorColumn(name="discr", type="string")
+ * @ORM\DiscriminatorMap({"unidad" = "Unidad", "cochera" = "Cochera"})
+ */
+
 class Unidad{
 	/**
 	* @ORM\Column(type="integer")
@@ -63,6 +66,10 @@ class Unidad{
 	*/
 	protected $fecha_ultima_op;
 
+    /**
+    * @ORM\OneToMany(targetEntity="Disponibilidad", mappedBy="unidad")
+    */
+    protected $disponibilidades;
 
 
     /**
@@ -289,5 +296,46 @@ class Unidad{
     public function getPropietario()
     {
         return $this->propietario;
+    }
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->disponibilidades = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Add disponibilidade
+     *
+     * @param \AppBundle\Entity\Disponibilidad $disponibilidade
+     *
+     * @return Unidad
+     */
+    public function addDisponibilidade(\AppBundle\Entity\Disponibilidad $disponibilidade)
+    {
+        $this->disponibilidades[] = $disponibilidade;
+
+        return $this;
+    }
+
+    /**
+     * Remove disponibilidade
+     *
+     * @param \AppBundle\Entity\Disponibilidad $disponibilidade
+     */
+    public function removeDisponibilidade(\AppBundle\Entity\Disponibilidad $disponibilidade)
+    {
+        $this->disponibilidades->removeElement($disponibilidade);
+    }
+
+    /**
+     * Get disponibilidades
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDisponibilidades()
+    {
+        return $this->disponibilidades;
     }
 }
