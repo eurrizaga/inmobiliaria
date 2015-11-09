@@ -8,13 +8,33 @@
    		{% include 'header.html.twig' %}
 
         <h1>Buscar Propietarios</h1>
-        <a href="/nuevo/propietario/">NUEVO</a>
-
+        
         {% if propietarios %}
-	        <table>
-	        	<tr><td>Apellido</td></tr>
+	        <table class='SearchTable'>
+	        	<tr>
+                    <td>Apellido</td>
+                    <td>Nombre</td>
+                    <td>DNI</td>
+                    <td>Direcci&oacute;n</td>
+                    <td>Localidad</td>
+                    <td>Telefono Fijo</td>
+                    <td>Opciones</td>
+                </tr>
 		        {% for p in propietarios %}
-		            <tr><td><a href="/modificar/propietario/{{ p.id }}">{{ p.apellido }}</a></td></tr>
+		            <tr>
+                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.apellido }}</a></td>
+                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.nombres }}</a></td>
+                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.nrodoc }}</a></td>
+                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.direccion }}</a></td>
+                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.localidad }}</a></td>
+                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.telefonofijo }}</a></td>
+                        <td>
+                            <a href="/modificar/propietario/{{ p.id }}"><img class = 'Icono' src='/app/img/pencil.png' title='MODIFICAR'/></a>
+                            
+                            <a href="/baja/propietario/{{ p.id }}"><img class = 'Icono' src='/app/img/Delete.png' title='ELIMINAR'/></a>
+                        </td>
+                        
+                    </tr>
 		        {% endfor %}
 		    </table>
         {% endif %}

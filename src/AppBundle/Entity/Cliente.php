@@ -3,6 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 //use Doctrine\Common\Collections\ArrayCollection;
 
 /**
@@ -22,61 +23,77 @@ class Cliente{
 	
 	/**
 	* @ORM\Column(type="string", length=100, nullable=true)
-	*/
+    */
 	protected $apellido;
 	
 	/**
 	* @ORM\Column(type="string", length=100, nullable=true)
-	*/
+    */
 	protected $nombres;
 	
 	/**
 	* @ORM\Column(type="string", length=5, nullable=true)
-	*/
+    */
 	protected $tipodoc;
 	
 	/**
 	* @ORM\Column(type="integer", nullable=true)
+    * @Assert\Type(
+     *     type="numeric",
+     *     message="El valor {{ value }} debe ser numérico."
+     * )
 	*/
 	protected $nrodoc;
 	
 	/**
 	* @ORM\Column(type="string", length=100, nullable=true)
-	*/
+    */
 	protected $direccion;
 	
 	/**
 	* @ORM\Column(type="string", length=30, nullable=true)
-	*/
+    */
 	protected $localidad;
 
 	/**
 	* @ORM\Column(type="integer", nullable=true)
-	*/
+    */
 	protected $codigopostal;
 	
 	/**
 	* @ORM\Column(type="string", length=30, nullable=true)
-	*/
+    */
 	protected $provincia;
 	
 	/**
 	* @ORM\Column(type="string", length=30, nullable=true)
-	*/
+    */
 	protected $pais;
 	
 	/**
 	* @ORM\Column(type="string", length=20, nullable=true)
+    * @Assert\Type(
+     *     type="numeric",
+     *     message="El valor {{ value }} debe ser numérico."
+     * )
 	*/
 	protected $telefonofijo;
 	
 	/**
 	* @ORM\Column(type="string", length=20, nullable=true)
+    * @Assert\Type(
+     *     type="numeric",
+     *     message="El valor {{ value }} debe ser numérico."
+     * )
 	*/
 	protected $telefonomovil;
 	
 	/**
 	* @ORM\Column(type="string", length=50, nullable=true)
+    * @Assert\Email(
+     *     message = "El email '{{ value }}' no es válido.",
+     *     checkMX = true
+     * )
 	*/
 	protected $email;
 	
@@ -96,7 +113,7 @@ class Cliente{
 	protected $fechaultimaop;
 	
 	/**
-	* @ORM\Column(type="text", nullable=true)
+    * @ORM\Column(type="text", nullable=true)
 	*/
 	protected $observaciones;
 	
@@ -106,7 +123,7 @@ class Cliente{
 	protected $problematico;
 	
 	/**
-	* @ORM\Column(type="string", length=5, nullable=true)
+    * @ORM\Column(type="string", length=5, nullable=true)
 	*/
 	protected $iva;
 

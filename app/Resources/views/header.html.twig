@@ -1,9 +1,16 @@
 <link href="{{ asset('app/css/main_menu.css') }}" type="text/css" rel="stylesheet" />
+<link href="{{ asset('app/css/tables.css') }}" type="text/css" rel="stylesheet" />
+<link href="{{ asset('app/css/general.css') }}" type="text/css" rel="stylesheet" />
 <div id='cssmenu'>
 <ul>
    <li class='has-sub'><a href='index.html'><span>Cocheras</span></a>
       <ul>
-         <li><a href='#'><span>Administrar</span></a></li>
+         <li class='has-sub'><a href='#'><span>Administrar</span></a>
+            <ul>
+               <li><a href='/nuevo/unidad/cochera'><span>Buscar</span></a></li>
+               <li class='last'><a href='/nuevo/unidad/cochera'><span>Nueva</span></a></li>
+            </ul>
+         </li>
          <li><a href='#'><span>Autorizaciones</span></a></li>
          <li><a href='#'><span>Alquiler / Reserva</span></a></li>
          <li class='last'><a href='#'><span>Grilla</span></a></li>
@@ -23,6 +30,13 @@
    </li>
    <li><a href='#'><span>Movimientos</span></a></li>
    <li><a href='#'><span>Usuarios</span></a></li>
+   <li class='has-sub'><a href='#'><span>Otros</span></a>
+      <ul>
+         <li><a href='/nuevo/edificio'><span>Edificios</span></a></li>
+         <li class='last'><a href='#'><span>Carpetas</span></a></li>
+      </ul>
+   </li>
+      
    <li class='last'><a href='#'><span>Salir</span></a></li>
 </ul>
 </div>

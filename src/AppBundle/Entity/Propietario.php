@@ -3,7 +3,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
 * @ORM\Entity
 */
@@ -17,6 +17,10 @@ class Propietario extends Cliente{
 	
 	/**
 	* @ORM\Column(type="integer", nullable=true)
+    * @Assert\Type(
+     *     type="numeric",
+     *     message="El valor {{ value }} debe ser numérico."
+     * )
 	*/
 	protected $cuit;
 	
@@ -25,6 +29,10 @@ class Propietario extends Cliente{
 	
 	/**
 	* @ORM\Column(type="integer", nullable=true)
+    * @Assert\Type(
+     *     type="numeric",
+     *     message="El valor {{ value }} debe ser numérico."
+     * )
 	*/
 	protected $cbu;
 	
@@ -40,11 +48,15 @@ class Propietario extends Cliente{
 
 	/**
 	* @ORM\Column(type="string", length=10, nullable=true)
-	*/
+    */
 	protected $mailing;
 	
 	/**
 	* @ORM\Column(type="integer", nullable=true)
+    * @Assert\Type(
+     *     type="numeric",
+     *     message="El valor {{ value }} debe ser numérico."
+     * )
 	*/
 	protected $num_carpeta;
 
@@ -69,6 +81,8 @@ class Propietario extends Cliente{
 
         return $this;
     }
+
+    
 
     /**
      * Get cuit
