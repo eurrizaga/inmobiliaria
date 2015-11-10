@@ -7,8 +7,12 @@
     <body>
    		{% include 'header.html.twig' %}
 
-        <h1>Buscar Propietarios</h1>
+        <h1>{{ operacion }}</h1>
         
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+
         {% if propietarios %}
 	        <table class='SearchTable'>
 	        	<tr>
@@ -18,16 +22,18 @@
                     <td>Direcci&oacute;n</td>
                     <td>Localidad</td>
                     <td>Telefono Fijo</td>
+                    <td>Carpeta</td>
                     <td>Opciones</td>
                 </tr>
 		        {% for p in propietarios %}
 		            <tr>
-                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.apellido }}</a></td>
-                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.nombres }}</a></td>
-                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.nrodoc }}</a></td>
-                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.direccion }}</a></td>
-                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.localidad }}</a></td>
-                        <td><a href="/modificar/propietario/{{ p.id }}">{{ p.telefonofijo }}</a></td>
+                        <td>{{ p.apellido }}</td>
+                        <td>{{ p.nombres }}</td>
+                        <td>{{ p.nrodoc }}</td>
+                        <td>{{ p.direccion }}</td>
+                        <td>{{ p.localidad }}</td>
+                        <td>{{ p.telefonofijo }}</td>
+                        <td>{{ p.numcarpeta }}</td>
                         <td>
                             <a href="/modificar/propietario/{{ p.id }}"><img class = 'Icono' src='/app/img/pencil.png' title='MODIFICAR'/></a>
                             

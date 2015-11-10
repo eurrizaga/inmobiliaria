@@ -13,6 +13,8 @@ use Symfony\Component\Validator\Constraints\DateTime;
 class UnidadController extends Controller
 {
 	protected $categorias = array('1', '2', '3', 'A', 'B', 'C');
+	protected $op_habilitadas = array('Alquiler', 'Venta', 'Ambos');
+	protected $periodos_sel = array('diario' => 'diario', 'semanal' => 'semanal', 'quincenal' => 'quincenal', 'mensual' => 'mensual');
 	/**
 	*@Route("nuevo/unidad/cochera", name="nueva_cochera")
 	*/
@@ -65,22 +67,19 @@ class UnidadController extends Controller
 		$edificios = $query->getResult();
 		$lista_edificios = array();
 		foreach ($edificios as $e){
-			$lista_edificios[] = ()
-
+			$lista_edificios += array($e->getId() => ($e->getNombre()."(".$e->getDireccion().")"));
 		}
-
 		return $this->createFormBuilder($cochera)
 						//->setAction($this->generateUrl('target_route'))
 						->setMethod('POST')
-						->add('edificio', 'choice')
+						->add('edificio', 'choice', array('choices' => $lista_edificios))
 						->add('numero', 'text')
-						->add('propietario', 'text')
-						->add('buscar', 'button')
-						->add('op_habilitadas', 'text')
-						->add('codigo', 'text')
+						->add('propietario', 'text', array('disabled' => true))
+						->add('buscar', 'button', array('attr' => array('onclick' => 'buscarPropietarios();')))
+						->add('op_habilitadas', 'choice', array('choices' => $this->op_habilitadas))
 						->add('num_carpeta', 'text')
 						->add('detalles', 'text')
-						->add('periodo_sugerido', 'text')
+						->add('periodo_sugerido', 'choice', array('choices' => $this->periodos_sel))
 						->add('categoria', 'choice', array('choices' => $this->categorias))
 						->add('ancho', 'text')
 						->add('largo', 'text')
@@ -90,7 +89,7 @@ class UnidadController extends Controller
 						->add('distancia_escalera_bristol', 'text')
 						->add('distancia_escalera_izq', 'text')
 						->add('distancia_escalera_der', 'text')
-
+						->add('codigo', 'text')
 						->add('guardar', 'submit', array('label' => 'GUARDAR COCHERA'))
 						->getForm();
 	}

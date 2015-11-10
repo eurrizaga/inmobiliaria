@@ -66,11 +66,44 @@ class ClienteController extends Controller
 	*@Route("buscar/propietario", name="buscar_propietario")
 	*/
 	public function buscaPropietario(Request $request){
-		$repository = $this -> getDoctrine()
-							-> getRepository('AppBundle:Propietario');
-		$propietarios = $repository -> findAll();
+		$form = $this->armarFormularioBusquedaPropietario();
+		$form->handleRequest($request);
+		$propietarios = null;
+
+		if ($form->isValid()){
+			$repository = $this -> getDoctrine()
+								-> getRepository('AppBundle:Propietario');
+			
+			$query = $repository->createQueryBuilder('p');
+			$cond = "1 = 1";
+			$apellido = $form['apellido']->getData();
+			if ($apellido != '')
+				$cond.= " AND p.apellido LIKE '%$apellido%' ";
+			$nombres = $form['nombres']->getData();
+			if ($nombres != '')
+				$cond.= " AND p.nombres LIKE '%$nombres%' ";
+			$nrodoc = $form['nrodoc']->getData();
+			if ($nrodoc != '')
+				$cond.= " AND p.nrodoc LIKE '%$nrodoc%' ";
+			$direccion = $form['direccion']->getData();
+			if ($direccion != '')
+				$cond.= " AND p.direccion LIKE '%$direccion%' ";
+			$num_carpeta = $form['num_carpeta']->getData();
+			if ($num_carpeta != '')
+				$cond.= " AND p.num_carpeta LIKE '%$num_carpeta%' ";
+
+			$query = $repository->createQueryBuilder('p')
+			->where($cond)
+			->getQuery();
+			
+			$propietarios = $query->getResult();
+
+		}
+
 		return $this->render('propietario/busca.html.twig', 
-							array ('propietarios' => $propietarios)
+							array ('form' => $form->createView(), 
+								'propietarios' => $propietarios, 
+								'operacion' => "Buscar Propietarios")
 							);
 	}
 
@@ -130,6 +163,20 @@ class ClienteController extends Controller
 						->add('sucursal', 'text')
 						->add('num_carpeta', 'text')
 						->add('guardar', 'submit', array('label' => 'GUARDAR PROPIETARIO'))
+						->getForm();
+	}
+
+	private function armarFormularioBusquedaPropietario(){
+		return $this->createFormBuilder()
+						//->setAction($this->generateUrl('target_route'))
+						->setMethod('POST')
+						->add('apellido', 'text', array('required' => false))
+						->add('nombres', 'text', array('required' => false))
+						->add('nrodoc', 'text', array('label' => 'Nro de documento', 'required' => false))
+						->add('direccion', 'text', array('required' => false))
+						->add('localidad', 'text', array('required' => false))
+						->add('num_carpeta', 'text', array('required' => false))
+						->add('buscar', 'submit', array('label' => 'BUSCAR PROPIETARIO'))
 						->getForm();
 	}
 	private function guardarDatos($form, $propietario){
