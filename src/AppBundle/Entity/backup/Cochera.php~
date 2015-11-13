@@ -346,38 +346,4 @@ class Cochera extends Unidad{
     {
         return $this->disponibilidades;
     }
-
-    /**
-     * Add autorizacione
-     *
-     * @param \AppBundle\Entity\Autorizacion $autorizacione
-     *
-     * @return Cochera
-     */
-    public function addAutorizacione(\AppBundle\Entity\Autorizacion $autorizacione)
-    {
-        $this->autorizaciones[] = $autorizacione;
-
-        return $this;
-    }
-
-    /**
-     * Remove autorizacione
-     *
-     * @param \AppBundle\Entity\Autorizacion $autorizacione
-     */
-    public function removeAutorizacione(\AppBundle\Entity\Autorizacion $autorizacione)
-    {
-        $this->autorizaciones->removeElement($autorizacione);
-    }
-
-    /**
-     * Get autorizaciones
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAutorizaciones()
-    {
-        return $this->autorizaciones;
-    }
 }

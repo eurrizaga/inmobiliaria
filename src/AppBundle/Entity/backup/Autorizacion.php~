@@ -1,0 +1,41 @@
+<?php
+
+namespace AppBundle\Entity;
+
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+* @ORM\Entity
+* @ORM\Table(name="autorizacion")
+*/
+
+class Autorizacion{
+	/**
+	* @ORM\Column(type="integer")
+	* @ORM\Id
+	* @ORM\GeneratedValue(strategy="AUTO")
+	*/
+	protected $id;
+	
+	/**
+	* @ORM\ManyToOne(targetEntity="Unidad", inversedBy="unidades")
+	* @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
+    **/
+	protected $unidad;
+
+	/**
+	* @ORM\Column(type="date")
+	*/
+	protected $fecha_autorizacion;
+
+	/**
+	* @ORM\Column(type="date")
+	*/
+	protected $fecha_desde;
+
+	/**
+	* @ORM\Column(type="date")
+	*/
+	protected $fecha_hasta;
+
+}

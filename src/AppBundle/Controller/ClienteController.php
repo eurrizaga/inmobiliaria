@@ -100,11 +100,42 @@ class ClienteController extends Controller
 
 		}
 
-		return $this->render('propietario/busca.html.twig', 
+		return $this->render('busca.html.twig', 
 							array ('form' => $form->createView(), 
 								'propietarios' => $propietarios, 
 								'operacion' => "Buscar Propietarios")
 							);
+	}
+
+	/**
+	*@Route("buscar/propietario/{apellido}/{nombres}/{nrodoc}/{num_carpeta}", name="buscar_propietario_unidad")
+	*/
+	function buscaPropietarioUnidad(Request $request, $apellido, $nombres, $nrodoc, $num_carpeta){
+		$repository = $this -> getDoctrine()
+								-> getRepository('AppBundle:Propietario');
+		$query = $repository->createQueryBuilder('p');
+		$cond = "1 = 1";
+		
+		if ($apellido != '0')
+			$cond.= " AND p.apellido LIKE '%$apellido%' ";
+		if ($nombres != '0')
+			$cond.= " AND p.nombres LIKE '%$nombres%' ";
+		if ($nrodoc != '0')
+			$cond.= " AND p.nrodoc LIKE '%$nrodoc%' ";
+		if ($num_carpeta != '0')
+			$cond.= " AND p.num_carpeta LIKE '%$num_carpeta%' ";
+
+		$query = $repository->createQueryBuilder('p')
+		->where($cond)
+		->getQuery();
+		
+		$propietarios = $query->getResult();
+
+		//return new response('wei') ;
+		return $this->render('propietario/listaprop.html.twig', 
+							array ('propietarios' => $propietarios, 'cochera' => true)
+							);
+
 	}
 
 	/**

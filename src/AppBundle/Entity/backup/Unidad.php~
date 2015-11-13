@@ -154,7 +154,30 @@ class Unidad{
         return $this->num_carpeta;
     }
 
-    
+    /**
+     * Set fechaAutorizacion
+     *
+     * @param \DateTime $fechaAutorizacion
+     *
+     * @return Unidad
+     */
+    public function setFechaAutorizacion($fechaAutorizacion)
+    {
+        $this->fecha_autorizacion = $fechaAutorizacion;
+
+        return $this;
+    }
+
+    /**
+     * Get fechaAutorizacion
+     *
+     * @return \DateTime
+     */
+    public function getFechaAutorizacion()
+    {
+        return $this->fecha_autorizacion;
+    }
+
     /**
      * Set detalles
      *
@@ -314,39 +337,5 @@ class Unidad{
     public function getDisponibilidades()
     {
         return $this->disponibilidades;
-    }
-
-    /**
-     * Add autorizacione
-     *
-     * @param \AppBundle\Entity\Autorizacion $autorizacione
-     *
-     * @return Unidad
-     */
-    public function addAutorizacione(\AppBundle\Entity\Autorizacion $autorizacione)
-    {
-        $this->autorizaciones[] = $autorizacione;
-
-        return $this;
-    }
-
-    /**
-     * Remove autorizacione
-     *
-     * @param \AppBundle\Entity\Autorizacion $autorizacione
-     */
-    public function removeAutorizacione(\AppBundle\Entity\Autorizacion $autorizacione)
-    {
-        $this->autorizaciones->removeElement($autorizacione);
-    }
-
-    /**
-     * Get autorizaciones
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAutorizaciones()
-    {
-        return $this->autorizaciones;
     }
 }

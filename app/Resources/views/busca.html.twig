@@ -1,0 +1,27 @@
+
+<!DOCTYPE html>
+<html>
+    <head>
+        <title><h1>{{ operacion }}</h1></title>
+    </head>
+    <body>
+   		{% include 'header.html.twig' %}
+
+        <h1>{{ operacion }}</h1>
+        
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {{ form_end(form) }}
+
+        {% if propietarios is defined %}
+            {% if propietarios %}
+	           {% include '/propietario/listaprop.html.twig' %}
+            {% endif %}
+        {% elseif cocheras is defined %}
+            {% if cocheras %}
+                {% include '/unidad/listacocheras.html.twig' %}
+            {% endif %}
+        {% endif %}
+        
+    </body>
+</html>

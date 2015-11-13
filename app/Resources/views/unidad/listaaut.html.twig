@@ -1,0 +1,30 @@
+<h3>Autorizaciones Previas</h3>
+{% if lista_autorizaciones is defined %}
+	{% if lista_autorizaciones %}
+		<table class='SearchTable'>
+		    <tr>
+		        <td>Fecha de Autorización</td>
+		        <td>Desde</td>
+		        <td>Hasta</td>
+		        <td>Opciones</td>
+		    </tr>
+		    
+
+		    {% for f in lista_forms %}
+		        <tr>
+		        	{{ form_start(f) }}
+		            <td>{{ form_widget(f.fecha_autorizacion, {'attr': {'disabled': 'true'}}) }}</td>
+		            <td>{{ form_widget(f.fecha_desde) }}</td>
+		            <td>{{ form_widget(f.fecha_hasta) }}</td>
+		            <td>
+	            		{{ form_widget(f.id) }}
+		            	{{ form_widget(f.modificar) }}
+		            	{{ form_widget(f.borrar) }}
+		            </td>
+		            {{ form_end(f)}}
+		        </tr>
+		        
+		    {% endfor %}
+		</table>
+	{% endif %}
+{% endif %}

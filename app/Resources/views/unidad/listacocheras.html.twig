@@ -1,0 +1,23 @@
+<table class='SearchTable'>
+    <tr>
+        <td>Edificio</td>
+        <td>Numero</td>
+        <td>Direcci&oacute;n</td>
+        <td>Propietario</td>
+        <td>Carpeta</td>
+        <td>Opciones</td>
+    </tr>
+    {% for c in cocheras %}
+        <tr>
+            <td>{{ c.edificio.nombre }}</td>
+            <td>{{ c.numero }}</td>
+            <td>{{ c.edificio.direccion }}</td>
+            <td>{{ c.propietario.apellido }}</td>
+            <td>{{ c.numcarpeta }}</td>
+            <td>
+                <a href="/modificar/unidad/cochera/{{ c.id }}">MODIFICAR</a>
+                <a href="/autorizar/unidad/{{ c.id }}">AUTORIZAR</a>
+            </td>
+        </tr>
+    {% endfor %}
+</table>

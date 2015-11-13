@@ -1,0 +1,19 @@
+{# app/Resources/views/propietario/propietario.html.twig #}
+{% include 'header.html.twig' %}
+<script src="{{ asset('app/js/unidades.js') }}"></script>
+{% for flashMessage in app.session.flashbag.get('notice') %}
+	<div class="flash-notice">
+	{{ flashMessage }}
+	</div>
+{% endfor %}
+
+{{ form_start(form) }}
+<h1> {{ operacion }}</h1>
+{{ form_widget(form) }}
+{{ form_end(form) }}
+
+<h1> Buscar Propietario</h1>
+{{ form_start(form_prop) }}
+{{ form_widget(form_prop) }}
+<div id='propietarios_lista'></div>
+{{ form_end(form_prop) }}

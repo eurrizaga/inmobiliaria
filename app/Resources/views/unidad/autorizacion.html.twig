@@ -1,0 +1,17 @@
+{# app/Resources/views/unidad/autorizacion.html.twig #}
+{% include 'header.html.twig' %}
+<script src="{{ asset('app/js/unidades.js') }}"></script>
+{% for flashMessage in app.session.flashbag.get('notice') %}
+	<div class="flash-notice">
+	{{ flashMessage }}
+	</div>
+{% endfor %}
+
+{{ form_start(form) }}
+	<h1> {{ operacion }}</h1>
+	{{ form_widget(form) }}
+{{ form_end(form) }}
+
+
+
+{% include 'unidad/listaaut.html.twig' %}

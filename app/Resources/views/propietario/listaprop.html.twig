@@ -1,0 +1,40 @@
+            <table class='SearchTable'>
+            <tr>
+                <td>Apellido</td>
+                <td>Nombre</td>
+                <td>DNI</td>
+                <td>Direcci&oacute;n</td>
+                <td>Localidad</td>
+                <td>Telefono Fijo</td>
+                <td>Carpeta</td>
+                <td>Opciones</td>
+            </tr>
+            {% for p in propietarios %}
+                <tr>
+                    <td>{{ p.apellido }}</td>
+                    <td>{{ p.nombres }}</td>
+                    <td>{{ p.nrodoc }}</td>
+                    <td>{{ p.direccion }}</td>
+                    <td>{{ p.localidad }}</td>
+                    <td>{{ p.telefonofijo }}</td>
+                    <td>{{ p.numcarpeta }}</td>
+                    <td>
+                        {% if cochera is defined %}
+                            <input type='radio' onclick='seleccionarPropietario({{ p.id }})'/>
+                        {% else %}
+
+                            <a href="/modificar/propietario/{{ p.id }}"><img class = 'Icono' src='/app/img/pencil.png' title='MODIFICAR'/></a>
+                        
+                            <a href="/baja/propietario/{{ p.id }}"><img class = 'Icono' src='/app/img/Delete.png' title='ELIMINAR'/></a>
+                        {% endif %}
+
+                        
+
+                        
+                    </td>
+                    
+                </tr>
+            {% endfor %}
+        </table>
+
+
