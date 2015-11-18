@@ -1,0 +1,48 @@
+{# app/Resources/views/unidad/disponibilidades.html.twig #}
+{% include 'header.html.twig' %}
+{% for flashMessage in app.session.flashbag.get('notice') %}
+	<div class="flash-notice">
+	{{ flashMessage }}
+	</div>
+{% endfor %}
+
+{{ form_start(form) }}
+<h1> {{ operacion }}</h1>
+{{ form_widget(form) }}
+{{ form_end(form) }}
+
+{% if unidades is defined %}
+	<table class='SearchTable'>
+	    <tr>
+	        <td>Edificio</td>
+	        <td>Numero</td>
+	        <td>Categoria</td>
+	        <td>Subsuelo</td>
+	        <td>Ancho</td>
+	        <td>Largo</td>
+	        <td>D. Ascensor</td>
+	        <td>D. Caracol</td>
+	        <td>D. Esc 1</td>
+	        <td>D. Esc 2</td>
+	        <td>Operaciones</td>
+	    </tr>
+	    {% for u in unidades %}
+	        <tr>
+	            <td>{{ u.resultados.edificio.nombre }}</td>
+	            <td>{{ u.resultados.numero }}</td>
+	            <td>{{ u.resultados.categoria }}</td>
+	            <td>{{ u.resultados.subsuelo }}</td>
+	            <td>{{ u.resultados.ancho }}</td>
+	            <td>{{ u.resultados.largo }}</td>
+	            <td>{{ u.resultados.distanciaascensor }}</td>
+	            <td>{{ u.resultados.distanciaescaleracaracol }}</td>
+	            <td>{{ u.resultados.distanciaescaleraizq }}</td>
+	            <td>{{ u.resultados.distanciaescalerader }}</td>
+	            <td>
+	            	<a href="/cochera/reserva/{{ u.resultados.id }}/{{ desde }}/{{ hasta }}">RESERVAR</a>
+	            	<a href="/cochera/alquiler/{{ u.resultados.id }}/{{ desde }}/{{ hasta }}">ALQUILAR</a>
+	            </td>
+	        </tr>
+	    {% endfor %}
+	</table>
+{% endif %}

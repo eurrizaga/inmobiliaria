@@ -17,7 +17,7 @@ Class Disponibilidad{
 	protected $id;
 	
 	/**
-	* @ORM\ManyToOne(targetEntity="Unidad", inversedBy="unidades")
+	* @ORM\ManyToOne(targetEntity="Unidad")
 	* @ORM\JoinColumn(name="unidad_id", referencedColumnName="id")
     **/
 	protected $unidad;

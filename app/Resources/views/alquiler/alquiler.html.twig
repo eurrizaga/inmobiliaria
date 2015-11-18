@@ -1,0 +1,23 @@
+{# app/Resources/views/unidad/autorizacion.html.twig #}
+{% include 'header.html.twig' %}
+<script src="{{ asset('app/js/alquiler.js') }}"></script>
+{% for flashMessage in app.session.flashbag.get('notice') %}
+	<div class="flash-notice">
+	{{ flashMessage }}
+	</div>
+{% endfor %}
+<h1> {{ operacion }} </h1>
+
+<div id='sector_cliente'>
+	{{ form_start(form_busca) }}
+		<h3> Buscar Cliente </h3>
+		{{ form_widget(form_busca) }}
+	{{ form_end(form_busca) }}
+	<div id="respuesta_cliente"></div>
+</div>
+<div id='sector_alquiler'>
+{{ form_start(form) }}
+	{{ form_widget(form) }}
+{{ form_end(form) }}
+</div>
+

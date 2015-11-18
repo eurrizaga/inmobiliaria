@@ -1,0 +1,23 @@
+<table class='SearchTable'>
+    <tr>
+        <td>Apellido</td>
+        <td>Nombre</td>
+        <td>DNI</td>
+        <td>Localidad</td>
+        <td>Telefono Fijo</td>
+        <td>Sel</td>
+    </tr>
+    {% for c in clientes %}
+        <tr>
+            <td>{{ c.apellido }}</td>
+            <td>{{ c.nombres }}</td>
+            <td>{{ c.nrodoc }}</td>
+            <td>{{ c.localidad }}</td>
+            <td>{{ c.telefonofijo }}</td>
+            <td>
+                <input name='sel' type='radio' onclick="seleccionarCliente('{{ c.id }}', '{{ c.apellido }}', '{{ c.nombres }}', '{{ c.tipodoc }}', '{{ c.nrodoc }}', '{{ c.direccion }}', '{{ c.localidad }}', '{{ c.codigopostal }}', '{{ c.provincia }}', '{{ c.pais }}', '{{ c.telefonofijo }}', '{{ c.telefonomovil }}', '{{ c.email }}', '{{ c.observaciones }}')"/>
+            </td>
+            
+        </tr>
+    {% endfor %}
+</table>

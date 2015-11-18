@@ -11,8 +11,9 @@
 		    
 
 		    {% for f in lista_forms %}
+		        {{ form_start(f) }}
 		        <tr>
-		        	{{ form_start(f) }}
+		        	
 		            <td>{{ form_widget(f.fecha_autorizacion, {'attr': {'disabled': 'true'}}) }}</td>
 		            <td>{{ form_widget(f.fecha_desde) }}</td>
 		            <td>{{ form_widget(f.fecha_hasta) }}</td>
@@ -21,9 +22,9 @@
 		            	{{ form_widget(f.modificar) }}
 		            	{{ form_widget(f.borrar) }}
 		            </td>
-		            {{ form_end(f)}}
+		            
 		        </tr>
-		        
+		        {{ form_end(f) }}
 		    {% endfor %}
 		</table>
 	{% endif %}

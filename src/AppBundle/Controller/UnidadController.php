@@ -17,6 +17,7 @@ class UnidadController extends Controller
 	protected $categorias = array('1', '2', '3', 'A', 'B', 'C');
 	protected $op_habilitadas = array('Alquiler', 'Venta', 'Ambos');
 	protected $periodos_sel = array('diario' => 'diario', 'semanal' => 'semanal', 'quincenal' => 'quincenal', 'mensual' => 'mensual');
+	
 	/**
 	*@Route("nuevo/unidad/cochera", name="nueva_cochera")
 	*/
@@ -265,7 +266,8 @@ class UnidadController extends Controller
 	*@Route("autorizar/unidad/{id}", name="autorizar_cochera")
 	*/
 	public function autorizarUnidad(Request $request, $id){
-		$form = $this->crearFormularioAutorizacion();
+		
+		$form = $this->crearFormularioAutorizacion(new Autorizacion(), 'crear');
 		
 		$form->handleRequest($request);
 		
@@ -289,7 +291,7 @@ class UnidadController extends Controller
 		$lista_autorizaciones = $repository -> findByUnidad($repository2->find($id));
 		$forms_mod = array();
 		foreach ($lista_autorizaciones as $a) {
-	        $forms_mod[] = $this->crearFormularioAutorizacion($a)->createView();
+	        $forms_mod[] = $this->crearFormularioAutorizacion($a, 'buscar')->createView();
 	    }
 		
 		return $this->render('unidad/autorizacion.html.twig', 
@@ -307,70 +309,116 @@ class UnidadController extends Controller
 		$unidad = $repository -> find($id);
 		$fecha_desde = $form['fecha_desde']->getData();
 		$fecha_hasta = $form['fecha_hasta']->getData();
+		
 		$aut_encontradas = $this->comprobarFechasAut($fecha_desde, $fecha_hasta, $mod = 0);
-		if (!$aut_encontradas){
+		if (count($aut_encontradas) == 0){
 			$autorizacion = new Autorizacion();
-			$autorizacion->setFechaAutorizacion($form['fecha_actual']->getData());
+			$autorizacion->setFechaAutorizacion($form['fecha_autorizacion']->getData());
 			$autorizacion->setFechaDesde($fecha_desde);
 			$autorizacion->setFechaHasta($fecha_hasta);			
 			$autorizacion->setUnidad($unidad);
 			
+			//Disponibilidades (MOTHER OF GOD)
+			$dc = new DisponibilidadController();
+
+			// La forma incorrecta:
+			$dc->setContainer($this->container);
+
+			//La forma correcta: crear un servicio
+			// fuck it
+			$dc -> setearDisponibilidad($unidad, $fecha_desde, $fecha_hasta);
+
 			$em = $this->getDoctrine()->getManager();
 			$em->persist($autorizacion);
 			$em->persist($unidad);
+			//$response = new Response('wei');
 			$em->flush();
-			
 			$response = $this->redirectToRoute('operacion_completada');	
 		}
-		else
+		else{
 			$response = null;
+
+		}
 		return $response;
 
 	}
 
-	private function crearFormularioAutorizacion($autorizacion = null){
-		if ($autorizacion != null){
+	private function crearFormularioAutorizacion($autorizacion, $op){
+		if ($op == 'buscar'){
 			return $this->createFormBuilder($autorizacion)
-						->setAction($this->generateUrl('autorizar_modificar'))
-						->setMethod('POST')
-						->add('id', 'hidden')
-						->add('fecha_autorizacion', 'date', array('required' => false, 'widget' => 'single_text'))
-						->add('fecha_desde', 'date', array('required' => false, 'widget' => 'single_text'))
-						->add('fecha_hasta', 'date', array('label' => 'Fecha Hasta', 'required' => false, 'widget' => 'single_text'))
-						->add('modificar', 'submit', array('label' => 'MODIFICAR'))
-						->add('borrar', 'submit', array('label' => 'BORRAR'))
-						->getForm();	
+							->setAction($this->generateUrl('autorizar_modificar'))
+							->setMethod('POST')
+							->add('id', 'hidden')
+							->add('fecha_autorizacion', 'date', array('required' => false, 'widget' => 'single_text'))
+							->add('fecha_desde', 'date', array('required' => false, 'widget' => 'single_text'))
+							->add('fecha_hasta', 'date', array('label' => 'Fecha Hasta', 'required' => false, 'widget' => 'single_text'))
+							//->add('op', 'hidden', array('mapped' => false))
+							->add('modificar', 'submit', array('label' => 'MODIFICAR'))
+							->add('borrar', 'submit', array('label' => 'BORRAR'))
+							->getForm();
 		}
-		else
-			return $this->createFormBuilder()
+		else{
+			if ($op == 'modificar'){
+				return $this->createFormBuilder()
+					->setAction($this->generateUrl('autorizar_modificar'))
+					->setMethod('POST')
+					->add('id', 'hidden')
+					->add('fecha_autorizacion', 'date', array('required' => false, 'widget' => 'single_text'))
+					->add('fecha_desde', 'date', array('required' => false, 'widget' => 'single_text'))
+					->add('fecha_hasta', 'date', array('label' => 'Fecha Hasta', 'required' => false, 'widget' => 'single_text'))
+					//->add('op', 'hidden', array('mapped' => false))
+					->add('modificar', 'submit', array('label' => 'MODIFICAR'))
+					->add('borrar', 'submit', array('label' => 'BORRAR'))
+					->getForm();
+			}
+			else{
+				return $this->createFormBuilder()
 							//->setAction($this->generateUrl('target_route'))
 							->setMethod('POST')
 							->add('id', 'hidden')
 							->add('fecha_autorizacion', 'date', array('required' => false, 'widget' => 'single_text'))
 							->add('fecha_desde', 'date', array('required' => false, 'widget' => 'single_text'))
 							->add('fecha_hasta', 'date', array('label' => 'Fecha Hasta', 'required' => false, 'widget' => 'single_text'))
+							->add('op', 'hidden', array('mapped' => false))
 							->add('agregar', 'submit', array('label' => 'AGREGAR AUTORIZACION'))
 							->getForm();
+			}
+
+		}
+		
 	}
 
 	/**
 	*@Route("autorizar/modificar/", name="autorizar_modificar")
 	*/
 	public function modificarAutorizacion(Request $request){
-		$autorizacion = new Autorizacion();
-		$form = $this->crearFormularioAutorizacion();
+		// Incializo previo
+		$form = $this->crearFormularioAutorizacion(new Autorizacion(), 'modificar');
 		$form->handleRequest($request);
+		
 		$id = $form['id']->getData();
 		$repository = $this->getDoctrine()
 						->getRepository('AppBundle:Autorizacion');
 		$autorizacion = $repository -> find($id);
-		$em = $this->getDoctrine()->getManager();
-		if($form->get('modificar')->isClicked()){
-			$fecha_desde = $form['fecha_desde']->getData();
-			$fecha_hasta = $form['fecha_hasta']->getData();
-			$aut_encontradas = $this->comprobarFechasAut($fecha_desde, $fecha_hasta, $id);
 
-			if (!$aut_encontradas){
+		//$form = $this->crearFormularioAutorizacion($autorizacion);
+		/*
+		$campos = $form->all();
+		foreach ($campos as $c){
+			echo $c->getName();
+		}
+		*/
+		$em = $this->getDoctrine()->getManager();
+		
+		$unidad = $autorizacion->getUnidad();
+		$fecha_desde = $form['fecha_desde']->getData();
+		$fecha_hasta = $form['fecha_hasta']->getData();
+		if($form->get('modificar')->isClicked()){
+			$aut_encontradas = $this->comprobarFechasAut($fecha_desde, $fecha_hasta, $id);
+			if (count($aut_encontradas) == 0){
+				$dc = new DisponibilidadController();
+				$dc->setContainer($this->container);
+				$result_disp = $dc -> modificarDisponibilidad($unidad, $autorizacion ->getFechaDesde(), $autorizacion ->getFechaHasta(), $fecha_desde, $fecha_hasta);
 				$autorizacion ->setFechaDesde($fecha_desde);
 				$autorizacion ->setFechaHasta($fecha_hasta);
 				$em->persist($autorizacion);
@@ -386,8 +434,22 @@ class UnidadController extends Controller
 			}
 		}
 		else{
-			$em->remove($product);
-			$em->flush();
+			//Disponibilidades (MOTHER OF GOD)
+			$dc = new DisponibilidadController();
+			$dc->setContainer($this->container);
+			$result_disp = $dc -> eliminarDisponibilidad($unidad, $fecha_desde, $fecha_hasta);
+			if ($result_disp){
+				$em->remove($autorizacion);
+				$em->flush();
+				$response = $this->redirectToRoute('operacion_completada');	
+			}
+			else{
+				$this->addFlash(
+					'notice',
+					'No se pueden actualizar las disponibilidades en esas fechas!'
+					);
+				$response = $this->redirectToRoute('autorizar_cochera');	
+			}
 		}
 		return $response;
 	}
@@ -397,8 +459,8 @@ class UnidadController extends Controller
 			$query = $em->createQuery(
 				'SELECT a
 				FROM AppBundle:Autorizacion a
-				WHERE ((a.fecha_desde >= :fecha_desde AND a.fecha_hasta <= :fecha_desde)
-					OR (a.fecha_desde >= :fecha_hasta AND a.fecha_hasta <= :fecha_hasta))
+				WHERE ((a.fecha_desde <= :fecha_desde AND a.fecha_hasta >= :fecha_desde)
+					OR (a.fecha_desde <= :fecha_hasta AND a.fecha_hasta >= :fecha_hasta))
 					AND (a.id != :id)
 				ORDER BY a.id ASC')
 				->setParameter('fecha_desde', $fecha_desde)
@@ -409,13 +471,19 @@ class UnidadController extends Controller
 			$query = $em->createQuery(
 				'SELECT a
 				FROM AppBundle:Autorizacion a
-				WHERE (a.fecha_desde >= :fecha_desde AND a.fecha_hasta <= :fecha_desde)
-					OR (a.fecha_desde >= :fecha_hasta AND a.fecha_hasta <= :fecha_hasta)
+				WHERE (a.fecha_desde <= :fecha_desde AND a.fecha_hasta >= :fecha_desde)
+					OR (a.fecha_desde <= :fecha_hasta AND a.fecha_hasta >= :fecha_hasta)
 				ORDER BY a.id ASC')
 				->setParameter('fecha_desde', $fecha_desde)
 				->setParameter('fecha_hasta', $fecha_hasta);
 		}
 		
 		return $query->getResult();
+	}
+
+	public function buscarUnidad($id){
+		$rep = $this->getDoctrine()->getRepository('AppBundle:Unidad');
+		$unidad = $rep->find($id);
+		return $unidad;
 	}
 }

@@ -6,7 +6,12 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use AppBundle\Entity\Cliente;
 use AppBundle\Entity\Propietario;
+use AppBundle\Entity\Unidad;
+use AppBundle\Entity\Cochera;
+use AppBundle\Entity\Alquiler;
+use AppBundle\Entity\Reserva;
 use Symfony\Component\Validator\Constraints\DateTime;
 
 class ClienteController extends Controller
@@ -110,7 +115,7 @@ class ClienteController extends Controller
 	/**
 	*@Route("buscar/propietario/{apellido}/{nombres}/{nrodoc}/{num_carpeta}", name="buscar_propietario_unidad")
 	*/
-	function buscaPropietarioUnidad(Request $request, $apellido, $nombres, $nrodoc, $num_carpeta){
+	public function buscaPropietarioUnidad(Request $request, $apellido, $nombres, $nrodoc, $num_carpeta){
 		$repository = $this -> getDoctrine()
 								-> getRepository('AppBundle:Propietario');
 		$query = $repository->createQueryBuilder('p');
@@ -134,6 +139,35 @@ class ClienteController extends Controller
 		//return new response('wei') ;
 		return $this->render('propietario/listaprop.html.twig', 
 							array ('propietarios' => $propietarios, 'cochera' => true)
+							);
+
+	}
+
+	/**
+	*@Route("buscar/cliente/{apellido}/{nombres}/{nrodoc}", name="buscar_cliente")
+	*/
+	public function buscaCliente(Request $request, $apellido, $nombres, $nrodoc){
+		$repository = $this -> getDoctrine()
+								-> getRepository('AppBundle:Cliente');
+		$query = $repository->createQueryBuilder('c');
+		$cond = "1 = 1";
+		
+		if ($apellido != '0')
+			$cond.= " AND c.apellido LIKE '%$apellido%' ";
+		if ($nombres != '0')
+			$cond.= " AND c.nombres LIKE '%$nombres%' ";
+		if ($nrodoc != '0')
+			$cond.= " AND c.nrodoc LIKE '%$nrodoc%' ";
+		
+		$query = $repository->createQueryBuilder('c')
+		->where($cond)
+		->getQuery();
+		
+		$clientes = $query->getResult();
+
+		//return new response('wei') ;
+		return $this->render('cliente/listaclientes.html.twig', 
+							array ('clientes' => $clientes, 'cochera' => true)
 							);
 
 	}
@@ -250,5 +284,14 @@ class ClienteController extends Controller
 		}
 
 		return $response;
+	}
+
+	public function buscarCliente($id){
+		$rep = $this->getDoctrine()->getRepository('AppBundle:Cliente');
+		$cliente = $rep->find($id);
+		if (!$cliente){
+			$cliente = new Cliente();
+		}
+		return $cliente;
 	}
 }

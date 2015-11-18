@@ -1,3 +1,4 @@
+
 function buscarPropietarios(){
     var pagina_requerida = false
         if (window.XMLHttpRequest) {
@@ -41,6 +42,3 @@ function buscarPropietarios(){
         pagina_requerida.send(null);
 }
 
-function seleccionarPropietario(id){
-		document.getElementById("form_propietario").value = id;
-}
