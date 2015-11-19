@@ -124,12 +124,29 @@ class AlquilerController extends Controller{
 		$fecha_desde = date_create($form['fecha_desde']->getData());
 		$fecha_hasta = date_create($form['fecha_hasta']->getData());
 
+		
+
 		$dc = new DisponibilidadController();
 		$dc -> setContainer($this->container);
 		$disponibilidad = $dc -> buscar($fecha_desde, $fecha_hasta, $unidad);
 		
-		$operacion = new Alquiler();
-
+		if ($disponibilidad){
+			$operacion = new Alquiler();
+			$operacion -> setCliente($cliente);
+			$operacion -> setUnidad($unidad);
+			$operacion -> setFechaDesde($fecha_desde);
+			$operacion -> setFechaHasta($fecha_hasta);
+			$operacion -> setUsuario($this->getUsuarioActivo());
+			$operacion -> setPromesaFecha($form['promesa_fecha']->getData());
+			$operacion -> setFechaHora(date('Y-m-d H:i:s'));
+			$operacion -> setComision($form['comision']->getData());
+			$operacion -> setObservaciones($form['observaciones']->getData());
+			$operacion -> setMontoTotal($form['monto_total']->getData());
+			$operacion -> setMontoAbonado($form['monto_abonado']->getData());
+			$operacion -> setMontoRecargo($form['monto_recargo']->getData());
+			$operacion -> setPromesaFecha($form['promesa_fecha']->getData());
+			
+		}
 
 		/*
 		$nrodoc = $form['nrodoc']->getData();

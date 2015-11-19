@@ -1,3 +1,6 @@
 app:
     resource: "@AppBundle/Controller/"
     type:     annotation
+user_registration:
+    path:     /registrar
+    defaults: { _controller: AppBundle:Registration:register }

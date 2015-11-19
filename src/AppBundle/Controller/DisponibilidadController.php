@@ -19,6 +19,8 @@ class DisponibilidadController extends Controller{
 		$form = $this->crearFormDisponibilidades();
 		$form->handleRequest($request);
 		$unidades_libres = null;
+		$fecha_desde = new DateTime();
+		$fecha_hasta = new DateTime();
 		if ($form->isValid()){
 			$fecha_desde = $form['fecha_desde']->getData();
 			$fecha_hasta = $form['fecha_hasta']->getData();
@@ -84,7 +86,7 @@ class DisponibilidadController extends Controller{
 		$anio2 = $fecha_hasta->format("Y");
 
 		if ($unidad)
-			$cond = "(d.unidad = " . $unidad . ") AND ";
+			$cond = "(d.unidad = :unidad) AND ";
 		else
 			$cond = "";
 

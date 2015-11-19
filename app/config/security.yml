@@ -1,12 +1,29 @@
 # To get started with security, check out the documentation:
 # http://symfony.com/doc/current/book/security.html
 security:
+    encoders:
+        AppBundle\Entity\Usuario:
+            algorithm: bcrypt
 
     # http://symfony.com/doc/current/book/security.html#where-do-users-come-from-user-providers
     providers:
+        proveedor_db:
+            entity:
+                class: AppBundle:Usuario
+                property: username
+                # if you're using multiple entity managers
+                # manager_name: customer    
         in_memory:
-            memory: ~
-
+            memory: #~
+                #usuarios hardcodeados
+                users:
+                    admin:
+                        password: root
+                        roles: 'ROLE_ADMIN'
+        #            jorge:
+        #                password: ryanpass
+        #                roles: 'ROLE_USER'
+    #agregar encoder. Se usa la clase User por defecto hasta que tengamos otra.
     firewalls:
         # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
@@ -17,8 +34,12 @@ security:
             anonymous: ~
             # activate different ways to authenticate
 
-            # http_basic: ~
+            http_basic: ~
             # http://symfony.com/doc/current/book/security.html#a-configuring-how-your-users-will-authenticate
 
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
+            provider: proveedor_db
+    access_control:
+        # require ROLE_ADMIN for /admin*
+        - { path: ^/, roles: ROLE_USER }

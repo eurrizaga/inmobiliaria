@@ -1,0 +1,17 @@
+{# app/Resources/views/registro/registro.html.twig #}
+
+{{ form_start(form) }}
+    {{ form_row(form.nombre) }}
+    {{ form_row(form.username) }}
+    {{ form_row(form.plainPassword.first) }}
+    {{ form_row(form.plainPassword.second) }}
+    {{ form_row(form.caja) }}
+    {{ form_row(form.administrar_unidades) }}
+    {{ form_row(form.alquiler_cocheras) }}
+    {{ form_row(form.alquiler_departamentos) }}
+    {{ form_row(form.administrar_operaciones) }}
+    {{ form_row(form.ver_logs) }}
+    {{ form_row(form.administrar_usuarios) }}
+
+    <button type="submit">Registrar!</button>
+{{ form_end(form) }}
