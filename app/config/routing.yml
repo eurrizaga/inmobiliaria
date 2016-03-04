@@ -4,3 +4,5 @@ app:
 user_registration:
     path:     /registrar
     defaults: { _controller: AppBundle:Registration:register }
+logout:
+    path: /logout

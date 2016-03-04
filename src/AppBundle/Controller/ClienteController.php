@@ -30,7 +30,7 @@ class ClienteController extends Controller
 		$form = $this->armarFormularioPropietario($propietario);
 		$form->handleRequest($request);
 		if ($form->isValid()) {
-			$response = $this->altaCliente($form);
+			$response = $this->altaCliente($form, 'propietario');
 			if ($response != null)
 				return $response;
 			else{
@@ -244,8 +244,26 @@ class ClienteController extends Controller
 						->add('buscar', 'submit', array('label' => 'BUSCAR PROPIETARIO'))
 						->getForm();
 	}
-	private function guardarDatos($form, $propietario){
-		$propietario->setApellido($form['apellido']->getData())
+	private function guardarDatos($form, $cliente, $tipo){
+		if ($tipo === 'cliente'){
+			$cliente->setApellido($form['apellido']->getData())
+					->setNombres($form['nombres']->getData())
+					->setTipodoc($form['tipodoc']->getData())
+					->setNrodoc($form['nrodoc']->getData())
+					->setDireccion($form['direccion']->getData())
+					->setLocalidad($form['localidad']->getData())
+					->setCodigopostal($form['codigopostal']->getData())
+					->setProvincia($form['provincia']->getData())
+					->setPais($form['pais']->getData())
+					->setTelefonofijo($form['telefonofijo']->getData())
+					->setTelefonomovil($form['telefonomovil']->getData())
+					->setEmail($form['email']->getData())
+					->setObservaciones($form['observaciones']->getData())
+					->setIva($form['iva']->getData());
+		}
+		else
+		{
+			$cliente->setApellido($form['apellido']->getData())
 					->setNombres($form['nombres']->getData())
 					->setTipodoc($form['tipodoc']->getData())
 					->setNrodoc($form['nrodoc']->getData())
@@ -264,19 +282,24 @@ class ClienteController extends Controller
 					->setBanco($form['banco']->getData())
 					->setSucursal($form['sucursal']->getData())
 					->setNumCarpeta($form['num_carpeta']->getData());
-
+		}
+		
 		$em = $this->getDoctrine()->getManager();
 		$em->persist($propietario);
 		$em->flush();
 	}
-	private function altaCliente($form){
+	private function altaCliente($form, $tipo = 'cliente'){
 		$nrodoc = $form['nrodoc']->getData();
 		$rep = $this->getDoctrine()->getRepository('AppBundle:Propietario');
 		
-		$propietario = $rep->findByNrodoc($nrodoc);
-		if (!$propietario){
-			$propietario = new Propietario();
-			$this->guardarDatos($form, $propietario);
+		$cliente = $rep->findByNrodoc($nrodoc);
+		if (!$cliente){
+			if ($tipo === 'cliente')
+				$cliente = new Cliente();
+			else
+				$cliente = new Propietario();
+
+			$this->guardarDatos($form, $cliente, $tipo);
 			$response = $this->redirectToRoute('operacion_completada');
 		}
 		else{
@@ -289,9 +312,11 @@ class ClienteController extends Controller
 	public function buscarCliente($id){
 		$rep = $this->getDoctrine()->getRepository('AppBundle:Cliente');
 		$cliente = $rep->find($id);
-		if (!$cliente){
-			$cliente = new Cliente();
-		}
+		return $cliente;
+	}
+	public function buscarClienteDNI($nrodoc){
+		$rep = $this->getDoctrine()->getRepository('AppBundle:Cliente');
+		$cliente = $rep->findByNrodoc($nrodoc);
 		return $cliente;
 	}
 }

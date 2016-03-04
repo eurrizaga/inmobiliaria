@@ -41,7 +41,10 @@
          <li class='last'><a href='#'><span>Carpetas</span></a></li>
       </ul>
    </li>
-      
+   {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+      <li><a href='#'><span>{{ app.user.username }}</span></a></li>
+   {% endif %}
+
    <li class='last'><a href='#'><span>Salir</span></a></li>
 </ul>
 </div>

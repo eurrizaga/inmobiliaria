@@ -34,8 +34,6 @@ class AlquilerController extends Controller{
 
 		$form->handleRequest($request);
 		if ($form->isValid()) {
-			
-
 			$response = $this->altaAlquiler($form);
 			if ($response != null)
 				return $response;
@@ -59,6 +57,15 @@ class AlquilerController extends Controller{
 							);
 
 	}
+	/**
+	*@Route("cochera/reserva/{id}/{desde}/{hasta}", name="nueva_reserva_cochera")
+	*/
+	public function buscarAlquileres(Request $request){
+		//ooohhh boy
+		
+		return new Response('wei');
+	}
+
 
 	/**
 	*@Route("cochera/reserva/{id}/{desde}/{hasta}", name="nueva_reserva_cochera")
@@ -76,7 +83,6 @@ class AlquilerController extends Controller{
 				->add('id_unidad', 'hidden')
 				->add('fecha_desde', 'hidden')
 				->add('fecha_hasta', 'hidden')
-
 				->add('apellido', 'text')
 				->add('nombres', 'text')
 				->add('tipodoc', 'choice', array('choices'  => array('DNI' => 'DNI', 'LE' => 'LE')))
@@ -116,7 +122,10 @@ class AlquilerController extends Controller{
 		$cc = new ClienteController();
 		$cc->setContainer($this->container);
 		$cliente = $cc->buscarCliente($form['id_cliente']->getData());
-
+		if (!$cliente){
+			$cc->altaCliente($form);
+			$cliente = $cc->buscarClienteDNI($form['nrodoc']->getData());
+		}
 		$uc = new UnidadController();
 		$uc->setContainer($this->container);
 		$unidad = $uc->buscarUnidad($form['id_unidad']->getData());
@@ -124,29 +133,46 @@ class AlquilerController extends Controller{
 		$fecha_desde = date_create($form['fecha_desde']->getData());
 		$fecha_hasta = date_create($form['fecha_hasta']->getData());
 
-		
-
 		$dc = new DisponibilidadController();
 		$dc -> setContainer($this->container);
 		$disponibilidad = $dc -> buscar($fecha_desde, $fecha_hasta, $unidad);
 		
 		if ($disponibilidad){
+			$dc -> setearDisponibilidad($unidad, $fecha_desde, $fecha_hasta, 'a');
+			//Crear Alquiler
 			$operacion = new Alquiler();
 			$operacion -> setCliente($cliente);
 			$operacion -> setUnidad($unidad);
 			$operacion -> setFechaDesde($fecha_desde);
 			$operacion -> setFechaHasta($fecha_hasta);
-			$operacion -> setUsuario($this->getUsuarioActivo());
+			$operacion -> setUsuario($this->getUser());
 			$operacion -> setPromesaFecha($form['promesa_fecha']->getData());
-			$operacion -> setFechaHora(date('Y-m-d H:i:s'));
+			
 			$operacion -> setComision($form['comision']->getData());
 			$operacion -> setObservaciones($form['observaciones']->getData());
-			$operacion -> setMontoTotal($form['monto_total']->getData());
+			$operacion -> setMontoTotal($form['monto_base']->getData());
 			$operacion -> setMontoAbonado($form['monto_abonado']->getData());
 			$operacion -> setMontoRecargo($form['monto_recargo']->getData());
 			$operacion -> setPromesaFecha($form['promesa_fecha']->getData());
 			
+			$now = new \DateTime('now'); //poner la / para que se interprete como datetime de php y no de symfony
+			$operacion -> setFechaHora($now);
+			//Actualizar Cuenta Corriente del propietario
+			//Actualizar Log
+
+			$em = $this->getDoctrine()->getManager();
+			$em->persist($cliente);
+			$em->persist($unidad);
+			$em->persist($this->getUser());
+			$em->persist($operacion);
+			$em->flush();
+
+			$response = $this->redirectToRoute('operacion_completada');
 		}
+		else{
+			$response = new Response('Unidad ya no disponible en ese periodo');
+		}
+		return $response;
 
 		/*
 		$nrodoc = $form['nrodoc']->getData();
@@ -156,7 +182,7 @@ class AlquilerController extends Controller{
 		if (!$propietario){
 			$propietario = new Propietario();
 			$this->guardarDatos($form, $propietario);
-			$response = $this->redirectToRoute('operacion_completada');
+			
 		}
 		else{
 			$response = null;

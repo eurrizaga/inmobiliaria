@@ -40,6 +40,9 @@ security:
             # form_login: ~
             # http://symfony.com/doc/current/cookbook/security/form_login_setup.html
             provider: proveedor_db
+            logout:
+                path:   /logout
+                target: /
     access_control:
-        # require ROLE_ADMIN for /admin*
+        # require ROLE_USER for /*
         - { path: ^/, roles: ROLE_USER }

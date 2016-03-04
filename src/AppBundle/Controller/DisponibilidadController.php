@@ -19,21 +19,23 @@ class DisponibilidadController extends Controller{
 		$form = $this->crearFormDisponibilidades();
 		$form->handleRequest($request);
 		$unidades_libres = null;
-		$fecha_desde = new DateTime();
-		$fecha_hasta = new DateTime();
+		$fecha_desde = date("Y-m-d");
+		$fecha_hasta = date("Y-m-d");
 		if ($form->isValid()){
 			$fecha_desde = $form['fecha_desde']->getData();
 			$fecha_hasta = $form['fecha_hasta']->getData();
 			$disponibilidades = $this->buscar($fecha_desde, $fecha_hasta);
 			$unidades_libres = $this->filtrarDisponibles($disponibilidades, $fecha_desde, $fecha_hasta);
+			$fecha_desde = $fecha_desde->format('Y-m-d');
+			$fecha_hasta = $fecha_hasta->format('Y-m-d');
 		}
 
 		return $this->render('unidad/disponibilidades.html.twig', 
 							array ('form' => $form->createView(),
 								'unidades' => $unidades_libres,
 								'operacion' => 'Buscar Disponibilidades',
-								'desde' => $fecha_desde->format("Y-m-d"),
-								'hasta' => $fecha_hasta->format("Y-m-d"))
+								'desde' => $fecha_desde,
+								'hasta' => $fecha_hasta)
 							);
 		//return new Response('wei');
 	}
@@ -132,7 +134,7 @@ class DisponibilidadController extends Controller{
 	    return array('resultado' => $query->getResult(), 'cant_meses' => $cant_meses);
 	}
 
-	public function setearDisponibilidad($unidad, $desde, $hasta){
+	public function setearDisponibilidad($unidad, $desde, $hasta, $car = '1'){
 		//Desmenuzar las fechas desde y hasta en meses (1/1 as 3/3)
 		$array_meses = $this->obtenerFechasMeses($desde, $hasta);
 
@@ -150,7 +152,7 @@ class DisponibilidadController extends Controller{
 			}
 			else{
 				$cadena = $disponibilidad -> getCadena();
-				$cadena = $this->modificarCadenaDisp($cadena, $am['desde'], $am['hasta'], '1');
+				$cadena = $this->modificarCadenaDisp($cadena, $am['desde'], $am['hasta'], $car);
 
 			}
 			//falló en obtener la cadena
